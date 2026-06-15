@@ -58,14 +58,41 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
+    var logger = services.GetRequiredService<ILogger<Program>>();
     try
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
+
+        // EnsureCreated will only create the database if it does not exist.
+        // It will NOT update an existing database schema. In development builds
+        // it's convenient to recreate the DB if new tables (like Documents)
+        // are missing so the app can run without requiring explicit migrations.
         context.Database.EnsureCreated(); // For development - use migrations in production
+
+        // Check if the Documents table exists; if not, recreate the database
+        // to match the current model (development convenience only).
+        try
+        {
+            var conn = context.Database.GetDbConnection();
+            conn.Open();
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT OBJECT_ID('dbo.Documents')";
+            var result = cmd.ExecuteScalar();
+            if (result == null || result == DBNull.Value)
+            {
+                logger.LogInformation("Documents table missing — recreating development database.");
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+            }
+            conn.Close();
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Failed to verify Documents table presence. Proceeding without recreation.");
+        }
     }
     catch (Exception ex)
     {
-        var logger = services.GetRequiredService<ILogger<Program>>();
         logger.LogError(ex, "An error occurred creating the database.");
     }
 }
