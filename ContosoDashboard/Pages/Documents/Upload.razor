@@ -1,0 +1,35 @@
+@page "/documents/upload"
+@using Microsoft.AspNetCore.Components.Forms
+@inject HttpClient Http
+
+<h3>Upload Document</h3>
+
+<InputFile OnChange="OnInputFileChange" />
+
+@code {
+    private IBrowserFile? selectedFile;
+
+    private void OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+    }
+
+    private async Task UploadAsync()
+    {
+        if (selectedFile == null) return;
+
+        var content = new MultipartFormDataContent();
+        var ms = new MemoryStream();
+        await selectedFile.OpenReadStream(25 * 1024 * 1024).CopyToAsync(ms);
+        ms.Position = 0;
+        content.Add(new StreamContent(ms), "file", selectedFile.Name);
+        content.Add(new StringContent("Uploaded Document"), "title");
+        content.Add(new StringContent("Project Documents"), "category");
+
+        var res = await Http.PostAsync("/api/documents/upload", content);
+        if (res.IsSuccessStatusCode)
+        {
+            // handle success
+        }
+    }
+}
