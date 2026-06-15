@@ -32,7 +32,11 @@ namespace ContosoDashboard.Services
                     using var scope = _services.CreateScope();
                     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-                    var pending = await db.Documents.Where(d => d.ScanStatus == Models.ScanStatus.Pending).Take(10).ToListAsync(stoppingToken);
+                    var pending = await db.Documents
+                        .Where(d => d.ScanStatus == Models.ScanStatus.Pending)
+                        .OrderBy(d => d.CreatedAt)
+                        .Take(10)
+                        .ToListAsync(stoppingToken);
                     foreach (var doc in pending)
                     {
                         // Simulate scan (MVP): mark Available after a short delay
