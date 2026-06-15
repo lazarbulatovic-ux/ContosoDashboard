@@ -19,15 +19,15 @@ description: "Task list for Document Upload and Management feature"
 
 ## Phase 2: Foundational (Blocking Prerequisites)
 
-- [ ] T005 [P] Create `Document` entity in `ContosoDashboard/Data/Document.cs`
-- [ ] T006 [P] Create `DocumentShare` entity in `ContosoDashboard/Data/DocumentShare.cs`
-- [ ] T007 [P] Add `IFileStorageService` interface in `ContosoDashboard/Services/IFileStorageService.cs`
-- [ ] T008 [P] Implement `LocalFileStorageService` in `ContosoDashboard/Services/LocalFileStorageService.cs` (store files outside `wwwroot`)
-- [ ] T009 [P] Implement `DocumentService` skeleton in `ContosoDashboard/Services/DocumentService.cs` (upload, metadata operations)
-- [ ] T010 Implement background scanning worker `ContosoDashboard/Services/DocumentScanWorker.cs` and queue integration
-- [ ] T011 [P] Update `ContosoDashboard/Data/ApplicationDbContext.cs` to include `DbSet<Document>` and `DbSet<DocumentShare>` and create EF Core migration in `Migrations/`
-- [ ] T012 Configure structured logging and audit fields in `Program.cs` and `ContosoDashboard/appsettings.json`
-- [ ] T013 [P] Add unit test project scaffolding and initial tests for `DocumentService` (`tests/unit/DocumentServiceTests.cs`)
+ - [X] T005 [P] Create `Document` entity in `ContosoDashboard/Data/Document.cs`
+ - [X] T006 [P] Create `DocumentShare` entity in `ContosoDashboard/Data/DocumentShare.cs`
+ - [X] T007 [P] Add `IFileStorageService` interface in `ContosoDashboard/Services/IFileStorageService.cs`
+ - [X] T008 [P] Implement `LocalFileStorageService` in `ContosoDashboard/Services/LocalFileStorageService.cs` (store files outside `wwwroot`)
+ - [X] T009 [P] Implement `DocumentService` skeleton in `ContosoDashboard/Services/DocumentService.cs` (upload, metadata operations)
+ - [X] T010 Implement background scanning worker `ContosoDashboard/Services/DocumentScanWorker.cs` and queue integration
+ - [X] T011 [P] Update `ContosoDashboard/Data/ApplicationDbContext.cs` to include `DbSet<Document>` and `DbSet<DocumentShare>` and create EF Core migration in `Migrations/`
+ - [X] T012 Configure structured logging and audit fields in `Program.cs` and `ContosoDashboard/appsettings.json`
+ - [X] T013 [P] Add unit test project scaffolding and initial tests for `DocumentService` (`tests/unit/DocumentServiceTests.cs`)
 
 ---
 
@@ -37,11 +37,11 @@ description: "Task list for Document Upload and Management feature"
 
 **Independent Test**: Upload a supported file ≤25MB with required metadata and verify it appears in `My Documents` and is downloadable after scan completes.
 
-- [ ] T014 [P] [US1] Create upload UI component `ContosoDashboard/Shared/Components/DocumentUpload.razor`
-- [ ] T015 [US1] Create Upload page `ContosoDashboard/Pages/Documents/Upload.razor`
-- [ ] T016 [US1] Implement server-side controller/endpoint to accept uploads and return upload status `ContosoDashboard/Controllers/DocumentController.cs`
+ - [X] T014 [P] [US1] Create upload UI component `ContosoDashboard/Shared/Components/DocumentUpload.razor`
+ - [X] T015 [US1] Create Upload page `ContosoDashboard/Pages/Documents/Upload.razor`
+ - [X] T016 [US1] Implement server-side controller/endpoint to accept uploads and return upload status `ContosoDashboard/Controllers/DocumentController.cs`
 - [ ] T017 [US1] Integrate `DocumentService` with `LocalFileStorageService` to perform the save-to-disk -> create-db-record workflow (`ContosoDashboard/Services/DocumentService.cs`)
-- [ ] T018 [US1] Show upload progress and validation in UI (max size/type) (`ContosoDashboard/Shared/Components/DocumentUpload.razor`)
+ - [X] T018 [US1] Show upload progress and validation in UI (max size/type) (`ContosoDashboard/Shared/Components/DocumentUpload.razor`)
 - [ ] T019 [US1] Add integration test for upload flow (`tests/integration/DocumentUploadTests.cs`)
 
 ---

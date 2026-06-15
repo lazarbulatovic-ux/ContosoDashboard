@@ -1,0 +1,67 @@
+@using Microsoft.AspNetCore.Components.Forms
+@inject HttpClient Http
+
+<div class="document-upload">
+    <InputFile OnChange="OnInputFileChange" />
+    @if (selectedFile != null)
+    {
+        <div>
+            <p>@selectedFile.Name (@(selectedFile.Size / 1024) KB)</p>
+            <button @onclick="UploadAsync">Upload</button>
+        </div>
+    }
+    @if (isUploading)
+    {
+        <progress max="100" value="@uploadProgress">@uploadProgress%</progress>
+    }
+    @if (!string.IsNullOrEmpty(message))
+    {
+        <div>@message</div>
+    }
+</div>
+
+@code {
+    private IBrowserFile? selectedFile;
+    private bool isUploading = false;
+    private int uploadProgress = 0;
+    private string? message;
+
+    private void OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+        message = null;
+    }
+
+    private async Task UploadAsync()
+    {
+        if (selectedFile == null) return;
+        isUploading = true;
+        uploadProgress = 0;
+
+        try
+        {
+            var content = new MultipartFormDataContent();
+            var ms = new MemoryStream();
+            await selectedFile.OpenReadStream(25 * 1024 * 1024).CopyToAsync(ms);
+            ms.Position = 0;
+            content.Add(new StreamContent(ms), "file", selectedFile.Name);
+            content.Add(new StringContent("Uploaded Document"), "title");
+            content.Add(new StringContent("Project Documents"), "category");
+
+            var res = await Http.PostAsync("/api/documents/upload", content);
+            if (res.IsSuccessStatusCode)
+            {
+                message = "Upload successful";
+            }
+            else
+            {
+                message = $"Upload failed: {res.ReasonPhrase}";
+            }
+        }
+        finally
+        {
+            isUploading = false;
+            uploadProgress = 100;
+        }
+    }
+}

@@ -52,6 +52,10 @@ builder.Services.AddHostedService<DocumentScanWorker>();
 // Add HttpContextAccessor for accessing user claims
 builder.Services.AddHttpContextAccessor();
 
+// Register HttpClient so Blazor components can inject `HttpClient`
+builder.Services.AddHttpClient();
+builder.Services.AddScoped(sp => sp.GetRequiredService<System.Net.Http.IHttpClientFactory>().CreateClient());
+
 var app = builder.Build();
 
 // Initialize database

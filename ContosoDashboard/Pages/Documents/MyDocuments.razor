@@ -1,0 +1,57 @@
+@page "/documents"
+@using ContosoDashboard.Data
+@using ContosoDashboard.Models
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext Db
+
+<h3>My Documents</h3>
+
+<p>
+    <a href="/documents/upload" class="btn btn-primary">Upload Document</a>
+</p>
+
+@if (documents == null)
+{
+    <p>Loading documents...</p>
+}
+else if (!documents.Any())
+{
+    <p>No documents found.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>File</th>
+                <th>Category</th>
+                <th>Uploaded</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var d in documents)
+            {
+                <tr>
+                    <td>@d.Title</td>
+                    <td>@d.FileName</td>
+                    <td>@d.Category</td>
+                    <td>@d.CreatedAt.ToLocalTime().ToString("g")</td>
+                    <td>@d.ScanStatus</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Document>? documents;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // TODO: replace fixed user id with authenticated user claims
+        var userId = 1;
+        documents = await Db.Documents.Where(d => d.UploadedById == userId).OrderByDescending(d => d.CreatedAt).ToListAsync();
+    }
+}
