@@ -28,7 +28,7 @@ namespace ContosoDashboard.Services
 
             using var outStream = File.Create(fullPath);
             await fileStream.CopyToAsync(outStream, cancellationToken);
-            return relativePath.Replace('\', '/');
+            return relativePath.Replace('\\', '/');
         }
 
         public Task DeleteAsync(string relativePath, CancellationToken cancellationToken = default)
